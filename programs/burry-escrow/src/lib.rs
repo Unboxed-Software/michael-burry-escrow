@@ -1,6 +1,7 @@
 use anchor_lang::prelude::*;
 use instructions::deposit::*;
 use instructions::withdraw::*;
+use instructions::withdraw_closed_feed::*;
 
 pub mod instructions;
 pub mod state;
@@ -19,5 +20,9 @@ mod burry_escrow {
 
     pub fn withdraw(ctx: Context<Withdraw>, params: WithdrawParams) -> Result<()> {
         withdraw_handler(ctx, params)
+    }
+
+    pub fn withdraw_closed_feed(ctx: Context<WithdrawClosedFeed>) -> Result<()> {
+        withdraw_closed_feed_handler(ctx)
     }
 }

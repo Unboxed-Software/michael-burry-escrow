@@ -11,36 +11,51 @@ pub fn withdraw_handler(ctx: Context<Withdraw>, params: WithdrawParams) -> Resul
 
     // get result
     let val: f64 = feed.get_result()?.try_into()?;
+    let current_timestamp = Clock::get().unwrap().unix_timestamp;
+    let mut valid_transfer: bool = false;
 
-    // check whether the feed has been updated in the last 300 seconds
-    feed.check_staleness(Clock::get().unwrap().unix_timestamp, 300)
-    .map_err(|_| error!(EscrowErrorCode::StaleFeed))?;
-
-    // check feed does not exceed max_confidence_interval
-    if let Some(max_confidence_interval) = params.max_confidence_interval {
-        feed.check_confidence_interval(SwitchboardDecimal::from_f64(max_confidence_interval))
-            .map_err(|_| error!(EscrowErrorCode::ConfidenceIntervalExceeded))?;
-    }
 
     msg!("Current feed result is {}!", val);
     msg!("Unlock price is {}", escrow_state.unlock_price);
 
-    if val < escrow_state.unlock_price as f64 {
-        return Err(EscrowErrorCode::SolPriceAboveUnlockPrice.into())
+    // Normal Use Case
+    if val > escrow_state.unlock_price as f64 {
+
+        // check feed does not exceed max_confidence_interval
+        if let Some(max_confidence_interval) = params.max_confidence_interval {
+            feed.check_confidence_interval(SwitchboardDecimal::from_f64(max_confidence_interval))
+                .map_err(|_| error!(EscrowErrorCode::ConfidenceIntervalExceeded))?;
+        }
+
+        feed.check_staleness(current_timestamp, 300)
+        .map_err(|_| error!(EscrowErrorCode::StaleFeed))?;
+
+        valid_transfer = true;
     }
+    else if (current_timestamp - feed.latest_confirmed_round.round_open_timestamp) > 86400 {
+        valid_transfer = true;
+    }
+    // This will mean the account is closed - it should never actually run - so we use the 
+    // withdraw_closed_feed function
+    else if **ctx.accounts.feed_aggregator.to_account_info().try_borrow_lamports()? == 0 {
+        valid_transfer = true;
+    }
+    
+    if valid_transfer{
+        **escrow_state.to_account_info().try_borrow_mut_lamports()? = escrow_state
+            .to_account_info()
+            .lamports()
+            .checked_sub(escrow_state.escrow_amount)
+            .ok_or(ProgramError::InvalidArgument)?;
 
-    // 'Transfer: `from` must not carry data'
-    **escrow_state.to_account_info().try_borrow_mut_lamports()? = escrow_state
-        .to_account_info()
-        .lamports()
-        .checked_sub(escrow_state.escrow_amount)
-        .ok_or(ProgramError::InvalidArgument)?;
-
-    **ctx.accounts.user.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.user
-        .to_account_info()
-        .lamports()
-        .checked_add(escrow_state.escrow_amount)
-        .ok_or(ProgramError::InvalidArgument)?;
+        **ctx.accounts.user.to_account_info().try_borrow_mut_lamports()? = ctx.accounts.user
+            .to_account_info()
+            .lamports()
+            .checked_add(escrow_state.escrow_amount)
+            .ok_or(ProgramError::InvalidArgument)?;
+    } else {
+        return Err(error!(EscrowErrorCode::InvalidWithdrawalRequest));
+    }
 
     Ok(())
 }

@@ -190,7 +190,7 @@ describe("burry-escrow", () => {
       // verify tx returns expected error
       didFail = true;
       console.log(e.error.errorMessage)
-      assert(e.error.errorMessage == 'Current SOL price is not above Escrow unlock price.')
+      assert(e.error.errorMessage == 'Invalid withdrawal request')
     }
 
     assert(didFail)
