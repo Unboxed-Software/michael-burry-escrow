@@ -14,7 +14,6 @@ describe("burry-escrow", () => {
   const program = anchor.workspace.BurryEscrow as Program<BurryEscrow>;
   const payer = (provider.wallet as AnchorWallet).payer
 
-
   it("Create Burry Escrow Below Price", async () => {
     // fetch switchboard devnet program object
     const switchboardProgram = await SwitchboardProgram.load(
@@ -29,7 +28,6 @@ describe("burry-escrow", () => {
       [Buffer.from("MICHAEL BURRY"), payer.publicKey.toBuffer()],
       program.programId
     )
-    console.log("Escrow Account: ", escrowState.toBase58())
 
     // fetch latest SOL price
     const solPrice: Big | null = await aggregatorAccount.fetchLatestValue()
@@ -37,12 +35,12 @@ describe("burry-escrow", () => {
       throw new Error('Aggregator holds no value')
     }
     const failUnlockPrice = solPrice.minus(10).toNumber()
-    const amtInLamps = new anchor.BN(100)
+    const amountToLockUp = new anchor.BN(100)
 
     // Send transaction
     try {
       const tx = await program.methods.deposit(
-        amtInLamps, 
+        amountToLockUp, 
         failUnlockPrice
       )
       .accounts({
@@ -54,7 +52,6 @@ describe("burry-escrow", () => {
       .rpc()
 
       await provider.connection.confirmTransaction(tx, "confirmed")
-      console.log("Your transaction signature", tx)
 
       // Fetch the created account
       const newAccount = await program.account.escrowState.fetch(
@@ -93,7 +90,6 @@ describe("burry-escrow", () => {
     .rpc()
 
     await provider.connection.confirmTransaction(tx, "confirmed")
-    console.log("Your transaction signature", tx)
 
     // assert that the escrow account has been closed
     let accountFetchDidFail = false;
@@ -129,12 +125,12 @@ describe("burry-escrow", () => {
       throw new Error('Aggregator holds no value')
     }
     const failUnlockPrice = solPrice.plus(10).toNumber()
-    const amtInLamps = new anchor.BN(100)
+    const amountToLockUp = new anchor.BN(100)
 
     // Send transaction
     try {
       const tx = await program.methods.deposit(
-        amtInLamps, 
+        amountToLockUp, 
         failUnlockPrice
       )
       .accounts({
