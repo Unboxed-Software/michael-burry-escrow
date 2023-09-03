@@ -28,9 +28,3 @@ address = "Fi8vncGpNKbq62gPo56G4toCehWNy77GgqGkTaAF5Lkk"
 
 [[test.validator.clone]] # sbv2 SOL/USD Feed
 address="GvDMxPzN1sCj7L26YDK2HnMRXEQmQ2aemov8YBtPS7vR"
-
-[[test.validator.clone]]
-address = "BjUgj6YCnFBZ49wF54ddBVA9qu8TeqkFtkbqmZcee8uW"
-
-[[test.validator.clone]]
-address = "sbattyXrzedoNATfc4L31wC9Mhxsi1BmFhTiN8gDshx"
