@@ -255,7 +255,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@switchboard-xyz/common@npm:^2.3.3":
+"@switchboard-xyz/common@npm:^2.3.3, @switchboard-xyz/common@npm:^2.3.4":
   version: 2.3.4
   resolution: "@switchboard-xyz/common@npm:2.3.4"
   dependencies:
@@ -2457,6 +2457,7 @@ __metadata:
   resolution: "root-workspace-0b6124@workspace:."
   dependencies:
     "@coral-xyz/anchor": ^0.28.1-beta.2
+    "@switchboard-xyz/common": ^2.3.4
     "@switchboard-xyz/oracle": ^2.1.13
     "@switchboard-xyz/solana.js": ^2.5.6
     "@types/bn.js": ^5.1.0

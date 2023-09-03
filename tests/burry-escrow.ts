@@ -79,7 +79,7 @@ describe("burry-escrow", () => {
     )
     
     // send tx
-    const tx = await program.methods.withdraw({ maxConfidenceInterval: null })
+    const tx = await program.methods.withdraw()
     .accounts({
       user: payer.publicKey,
       escrowAccount: escrowState,
@@ -173,7 +173,7 @@ describe("burry-escrow", () => {
     
     // send tx
     try {
-      const tx = await program.methods.withdraw({ maxConfidenceInterval: null })
+      const tx = await program.methods.withdraw()
       .accounts({
         user: payer.publicKey,
         escrowAccount: escrowState,

@@ -5,6 +5,7 @@
     },
     "dependencies": {
         "@coral-xyz/anchor": "^0.28.1-beta.2",
+        "@switchboard-xyz/common": "^2.3.4",
         "@switchboard-xyz/oracle": "^2.1.13",
         "@switchboard-xyz/solana.js": "^2.5.6"
     },

@@ -17,7 +17,7 @@ mod burry_escrow {
         deposit_handler(ctx, escrow_amt, unlock_price)
     }
 
-    pub fn withdraw(ctx: Context<Withdraw>, params: WithdrawParams) -> Result<()> {
-        withdraw_handler(ctx, params)
+    pub fn withdraw(ctx: Context<Withdraw>) -> Result<()> {
+        withdraw_handler(ctx)
     }
 }
