@@ -1,0 +1,5 @@
+{
+    "rust-analyzer.linkedProjects": [
+        "./programs/burry-escrow/Cargo.toml"
+    ]
+}
