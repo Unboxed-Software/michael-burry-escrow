@@ -18,8 +18,12 @@ pub fn withdraw_handler(ctx: Context<Withdraw>, params: WithdrawParams) -> Resul
     msg!("Current feed result is {}!", val);
     msg!("Unlock price is {}", escrow_state.unlock_price);
 
+    if (current_timestamp - feed.latest_confirmed_round.round_open_timestamp) > 86400 {
+        valid_transfer = true;
+    } else if **ctx.accounts.feed_aggregator.to_account_info().try_borrow_lamports()? == 0 {
+        valid_transfer = true;
+    } else if val > escrow_state.unlock_price as f64 {
     // Normal Use Case
-    if val > escrow_state.unlock_price as f64 {
 
         // check feed does not exceed max_confidence_interval
         if let Some(max_confidence_interval) = params.max_confidence_interval {
@@ -30,14 +34,6 @@ pub fn withdraw_handler(ctx: Context<Withdraw>, params: WithdrawParams) -> Resul
         feed.check_staleness(current_timestamp, 300)
         .map_err(|_| error!(EscrowErrorCode::StaleFeed))?;
 
-        valid_transfer = true;
-    }
-    else if (current_timestamp - feed.latest_confirmed_round.round_open_timestamp) > 86400 {
-        valid_transfer = true;
-    }
-    // This will mean the account is closed - it should never actually run - so we use the 
-    // withdraw_closed_feed function
-    else if **ctx.accounts.feed_aggregator.to_account_info().try_borrow_lamports()? == 0 {
         valid_transfer = true;
     }
     
