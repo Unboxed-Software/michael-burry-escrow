@@ -1,1 +1,1 @@
-# Micheal-Burry-Escrow
+# Michael-Burry-Escrow
