@@ -245,8 +245,9 @@ describe.only("burry-escrow-vrf", () => {
           assert.fail()
         }
     
-        let rolledDoubles = false
-        while(!rolledDoubles){
+        // SOLUTION EDIT: Renamed from rolledDoubles to outOfJail
+        let outOfJail = false
+        while(!outOfJail){
           try {
             // Request randomness and roll dice
             const tx = await program.methods.getOutOfJail({
@@ -290,8 +291,13 @@ describe.only("burry-escrow-vrf", () => {
             }
 
             console.log("Roll results - Die 1:", vrfState.dieResult1, "Die 2:", vrfState.dieResult2)
-            if(vrfState.dieResult1 == vrfState.dieResult2){
-              rolledDoubles = true
+
+            // SOLUTION EDIT: Checked for 3 rolls.
+            if(vrfState.rollCount >= 3){
+              console.log("Rolled 3 times, out of jail!")
+              outOfJail = true
+            } else if(vrfState.dieResult1 == vrfState.dieResult2){
+              outOfJail = true
             } else {
               console.log("Resetting die...")
               await delay(5000)

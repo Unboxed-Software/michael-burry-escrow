@@ -48,6 +48,8 @@ pub fn init_vrf_client_handler(ctx: Context<InitVrfClient>) -> Result<()> {
     vrf_state.escrow = ctx.accounts.escrow_account.key();
     vrf_state.die_result_1 = 0;
     vrf_state.die_result_2 = 0;
+    // SOLUTION EDIT: Initalized roll count
+    vrf_state.roll_count = 0;
     vrf_state.timestamp = 0;
     vrf_state.dice_type = 6; // sided
 

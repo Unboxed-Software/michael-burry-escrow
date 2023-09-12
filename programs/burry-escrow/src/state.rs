@@ -20,6 +20,8 @@ pub struct VrfClientState {
 	pub dice_type: u8, // 6 sided
     pub die_result_1: u8,
     pub die_result_2: u8,
+    // SOLUTION EDIT: Added in roll count
+    pub roll_count: u8,
     pub timestamp: i64,
     pub vrf: Pubkey,
     pub escrow: Pubkey

@@ -53,6 +53,14 @@ pub fn consume_randomness_handler(ctx: Context<ConsumeRandomness>) -> Result <()
     vrf_state.die_result_2 = dice_2;
     vrf_state.timestamp = Clock::get().unwrap().unix_timestamp;
 
+    // SOLUTION EDIT: Ticked up roll count and checked if over 3
+    vrf_state.roll_count = vrf_state.roll_count.saturating_add(1);
+    if vrf_state.roll_count >= 3 {
+        msg!("Three rolls and you're out of jail!");
+        let escrow_state = &mut ctx.accounts.escrow_account;
+        escrow_state.out_of_jail = true;
+    }
+
     if dice_1 == dice_2 {
         msg!("Rolled doubles, get out of jail free!");
         let escrow_state = &mut ctx.accounts.escrow_account;
