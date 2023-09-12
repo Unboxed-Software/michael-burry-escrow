@@ -44,6 +44,7 @@ pub fn init_vrf_client_handler(ctx: Context<InitVrfClient>) -> Result<()> {
     let mut vrf_state = ctx.accounts.vrf_state.load_init()?;
     *vrf_state = VrfClientState::default();
     vrf_state.bump = ctx.bumps.get("vrf_state").unwrap().clone();
+    vrf_state.vrf = ctx.accounts.vrf.key();
     vrf_state.escrow = ctx.accounts.escrow_account.key();
     vrf_state.die_result_1 = 0;
     vrf_state.die_result_2 = 0;
