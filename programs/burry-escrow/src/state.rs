@@ -21,6 +21,5 @@ pub struct VrfClientState {
     pub die_result_1: u8,
     pub die_result_2: u8,
     pub timestamp: i64,
-    pub vrf: Pubkey,
     pub escrow: Pubkey
 }
